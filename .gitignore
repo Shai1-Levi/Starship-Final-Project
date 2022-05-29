@@ -36,3 +36,9 @@ terraform.rc
 
 #__pycache__ files
 *.cpython-38.pyc
+
+# Ignore Json configuration files
+*.json
+
+*.lock.hcl
+
