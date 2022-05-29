@@ -15,5 +15,6 @@ class Containers:
         self.img = self.client.images.pull(image_name)
 
     def run_container(self, container_name, port, target_port):
-        if container_name==self.img:
+        if container_name==self.img and self.img!="":
             self.client.containers.run(self.img, detach=True, ports={port: target_port}, name=container_name)
+        return "can't run image, may be image not exist."
