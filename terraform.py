@@ -35,8 +35,4 @@ class terraform:
         print("init")
 
 
-        # # self.containers.run_container(img, version, 80, 8080)
-        # if (vm > 0) and (k8s==0):
-        #     self.tf.create_vm_instances(vm)
-        # if (vm == 0) and (k8s>0):
-        #     self.tf.create_k8s_cluster(k8s)
+       
