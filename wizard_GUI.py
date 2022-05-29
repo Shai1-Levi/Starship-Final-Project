@@ -4,12 +4,14 @@
 import tkinter as tk
 from containers import Containers
 from terraform import terraform
+from helm import Helm
 
 class GUI:
     def __init__(self):
 
         self.containers = Containers()
         self.tf = terraform()
+        self.helm = Helm()
         
         self.root=tk.Tk()
  
@@ -88,6 +90,8 @@ class GUI:
             self.tf.create_vm_instances(vm)
         if (vm == 0) and (k8s>0):
             self.tf.create_k8s_cluster(k8s)
+            self.helm.run_helm(image_name=img, image_tag=version)
+
         
         self.image_var.set("")
         self.image_version_var.set("")
