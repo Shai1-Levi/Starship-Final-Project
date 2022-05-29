@@ -85,12 +85,13 @@ class GUI:
         print("The number of VMs : " + str(vm))
         print("The k8s cluster : " + str(k8s))
 
+        self.containers.pull_image(img)
         # self.containers.run_container(img, version, 80, 8080)
-        if (vm > 0) and (k8s==0):
-            self.tf.create_vm_instances(vm)
-        if (vm == 0) and (k8s>0):
-            self.tf.create_k8s_cluster(k8s)
-            self.helm.run_helm(image_name=img, image_tag=version)
+        # if (vm > 0) and (k8s==0):
+        #     self.tf.create_vm_instances(vm)
+        # if (vm == 0) and (k8s>0):
+        #     self.tf.create_k8s_cluster(k8s)
+        #     self.helm.run_helm(image_name=img, image_tag=version)
 
         
         self.image_var.set("")
