@@ -20,10 +20,11 @@ class terraform:
             print(os.getcwd())
             self.terraform_init()
             self.terraform_plan() 
-            self.terraform_apply()
+            self.terraform_apply(nodes_number)
 
-    def terraform_apply(self):
-        subprocess.run("terraform apply -auto-approve", shell=True)
+    def terraform_apply(self, nodes_number):
+        command = 'terraform apply -var "gke_node_count={}" -auto-approve'.format(nodes_number)
+        subprocess.run(command, shell=True)
         print("apply")
 
     def terraform_plan(self):

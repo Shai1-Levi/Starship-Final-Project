@@ -29,7 +29,7 @@ module "gke" {
       auto_upgrade              = true
       service_account           = var.gke_service_account  
       preemptible               = false
-      initial_node_count        = 2
+      initial_node_count        = var.gke_node_count
     },
   ]
 

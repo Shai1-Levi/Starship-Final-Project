@@ -47,5 +47,8 @@ variable "gke_service_account" {
     description = "GKE servive Account Name"  
 }
 
-
+variable "gke_node_count" {
+    type        = number
+    description = "number of node to GKE cluster" 
+}
 
