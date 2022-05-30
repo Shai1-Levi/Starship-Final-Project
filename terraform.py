@@ -8,10 +8,14 @@ class terraform:
     def __init__(self):    
         self.tf = Terraform()
 
-    def create_vm_instances(self,vm_number=0):
+    def create_vm_instances(self, vm_name, image_name_tag, container_name, vm_number=0):
         if vm_number>0:
             print("VM")
-            # self.tf.apply('./vm_tfs', no_color=IsFlagged, refresh=False, var={'a':'b', 'c':'d'})
+            os.chdir(os.getcwd()+"\\vm_tfs\\")
+            print(os.getcwd())
+            self.terraform_init()
+            self.terraform_plan()
+            subprocess.run('terraform apply -var vm-instance-name="{}" -var image_name_tag="{}" -var container_name="{}" -auto-approve'.format(vm_name, image_name_tag, container_name))
 
     def create_k8s_cluster(self,nodes_number=0):
         if nodes_number>0:
