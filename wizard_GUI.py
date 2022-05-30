@@ -5,6 +5,7 @@ import tkinter as tk
 from containers import Containers
 from terraform import terraform
 from helm import Helm
+import re
 
 class GUI:
     def __init__(self):
@@ -68,7 +69,12 @@ class GUI:
         # performing an infinite loop
         # for the window to display
         self.root.mainloop()
- 
+    
+
+    def genrate_valid_name(self,image_name):
+        regex = "/"
+        new_image_name = re.compile(regex).split(image_name)
+        return new_image_name[-1]
   
     # defining a function that will
     # get the fields and
@@ -85,12 +91,16 @@ class GUI:
         print("The number of VMs : " + str(vm))
         print("The k8s cluster : " + str(k8s))
 
-        # self.containers.run_container(img, version, 80, 8080)
-        if (vm > 0) and (k8s==0):
-            self.tf.create_vm_instances(vm)
-        if (vm == 0) and (k8s>0):
-            self.tf.create_k8s_cluster(k8s)
-            self.helm.run_helm(image_name=img, image_tag=version)
+        valid_name = self.genrate_valid_name(img)
+        self.containers.pull_image(img)
+        self.containers.run_container(img, valid_name, 80, 8080)
+
+
+        # if (vm > 0) and (k8s==0):
+        #     self.tf.create_vm_instances(vm)
+        # if (vm == 0) and (k8s>0):
+        #     self.tf.create_k8s_cluster(k8s)
+        #     self.helm.run_helm(name=valid_name, image_name=img, image_tag=version)
 
         
         self.image_var.set("")

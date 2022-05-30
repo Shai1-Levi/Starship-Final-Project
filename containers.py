@@ -10,6 +10,10 @@ class Containers:
         print([container.name for container in running_container])
         return [container.name for container in running_container]
 
-    def run_container(self, container_name, port, target_port):
-        img = self.client.images.pull(container_name)
-        self.client.containers.run(img, detach=True, ports={port: target_port}, name=container_name)
+    def pull_image(self, image_name):
+        self.img = self.client.images.pull(image_name)
+
+    def run_container(self, image_name, container_name, port, target_port):
+       
+        self.client.containers.run(image_name, detach=True, ports={port: target_port}, name=container_name)
+        # return "can't run image, may be image not exist."
