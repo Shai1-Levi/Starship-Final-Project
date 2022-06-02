@@ -1,3 +1,4 @@
+from re import sub
 from python_terraform import *
 import os
 import subprocess
@@ -8,10 +9,15 @@ class terraform:
     def __init__(self):    
         self.tf = Terraform()
 
-    def create_vm_instances(self,vm_number=0):
+    def create_vm_instances(self, vm_name, image_name_tag, container_name, vm_number=0):
         if vm_number>0:
             print("VM")
-            # self.tf.apply('./vm_tfs', no_color=IsFlagged, refresh=False, var={'a':'b', 'c':'d'})
+            os.chdir(os.getcwd()+"\\vm_tfs\\")
+            print(os.getcwd())
+            self.terraform_init()
+            self.terraform_plan()
+            command = 'terraform apply -var "vm-instance-name={}" -var "image_name_tag={}" -var "container_name={}" -auto-approve'.format(vm_name, image_name_tag, container_name)
+            subprocess.run(command, shell=True)
 
     def create_k8s_cluster(self,nodes_number=0):
         if nodes_number>0:
@@ -35,5 +41,7 @@ class terraform:
         subprocess.run( "terraform init", shell=True)
         print("init")
 
+    def terraform_destroy(self):
+        subprocess.run("terraform destroy", shell=True)
+        print("destroy")
 
-       
