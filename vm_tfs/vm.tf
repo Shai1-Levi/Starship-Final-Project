@@ -127,7 +127,7 @@ resource "google_compute_instance" "default" {
 
       # pull the image from docker hub
       "sudo docker pull ${var.image_name_tag}",
-      "sudo docker run -p ${var.expose_container_port}:${var.expose_container_port} --name ${var.container_name} ${var.image_name_tag}"
+      "sudo docker run -p ${var.expose_container_port}:${var.expose_container_port} --name ${var.container_name} ${var.image_name_tag} -d"
     ]
   }
 }

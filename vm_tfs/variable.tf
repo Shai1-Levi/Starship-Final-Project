@@ -34,7 +34,7 @@ variable "container_name" {
   default     = "samba"
 }
 
-variable "image_name" {
+variable "image_name_tag" {
   type        = string
   description = "name of the iamge that should run on the vm"
   default     = "dperson/samba:latest"
