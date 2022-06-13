@@ -31,12 +31,12 @@ data "google_client_openid_userinfo" "me" {}
 
 resource "google_compute_firewall" "http-server" {
   project = local.project_id
-  name    = "default-allow-http-terraform"
+  name    = "http-server"
   network = local.network
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "443"]
+    ports    = ["80", "443", "403"]
   }
 
   priority = 1000
@@ -46,9 +46,9 @@ resource "google_compute_firewall" "http-server" {
   target_tags   = ["http-server"] 
 }
 
-resource "google_compute_firewall" "nginx-rule" {
+resource "google_compute_firewall" "web-rule" {
   project = local.project_id
-  name    = "default-allow-vault-terraform"
+  name    = "web-rule"
   network = local.network
 
   allow {
@@ -60,19 +60,19 @@ resource "google_compute_firewall" "nginx-rule" {
 
   // Allow traffic from all IP to instances with an http-server tag
   source_ranges = ["0.0.0.0/0"]
-  target_tags   = ["nginx-rule"] 
+  target_tags   = ["web-rule"] 
 }
 
 resource "google_compute_firewall" "ssh-rule" {
   project = local.project_id
-  name = "vm-terraform-starship"
+  name = "ssh-rule"
   network = google_compute_network.vpc_network.name
   allow {
     protocol = "tcp"
     ports = ["22"]
   }
   // Allow traffic from my IP to instances with an http-server tag
-  target_tags = ["vm-terraform-starship"]
+  target_tags = ["ssh-rule"]
   source_ranges = ["${chomp(data.http.devip.body)}/32"]
 }
 
@@ -86,7 +86,7 @@ resource "google_compute_instance" "default" {
   machine_type          = each.value.machine_type
   zone                  = each.value.zone 
   project               = local.project_id
-  tags = ["http-server", "ssh-rule", "nginx-rule"] // Apply the firewall rule to allow external IPs to access this instance
+  tags = ["http-server", "https-server", "ssh-rule", "web-rule"] // Apply the firewall rule to allow external IPs to access this instance
 
   boot_disk {
     initialize_params {
@@ -114,20 +114,29 @@ resource "google_compute_instance" "default" {
     timeout     = "5m"
   }  
 
+  provisioner "file"{
+    source      = "../docker-compose.yaml"
+    destination = "docker-compose.yaml"  
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y  update",
 
-       # installing docker on vm 
+      # installing docker-compose on vm 
+      "mkdir -p ~/.docker/cli-plugins/",
+      "curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose",
+      "chmod +x ~/.docker/cli-plugins/docker-compose",
+
+      # installing docker on vm 
       "sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
       "sudo add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"",
 
       # sudo apt update
       "sudo apt-get install --yes docker-ce",
 
-      # pull the image from docker hub
-      "sudo docker pull ${var.image_name_tag}",
-      "sudo docker run -p ${var.expose_container_port}:${var.expose_container_port} --name ${var.container_name} ${var.image_name_tag} -d"
+      # run hermes on VM
+      "sudo docker compose up -d"
     ]
   }
 }
