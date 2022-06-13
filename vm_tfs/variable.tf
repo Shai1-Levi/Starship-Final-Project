@@ -26,23 +26,3 @@ variable "vm-instance-name" {
   description = "instance name should be unique"
   default     = "vm-terraform-starship-000-staging"
 }
-
-
-variable "container_name" {
-  type        = string
-  description = "name of the container can iclude only letters and digits"
-  default     = "samba"
-}
-
-variable "image_name_tag" {
-  type        = string
-  description = "name of the iamge that should run on the vm"
-  default     = "dperson/samba:latest"
-}
-
-
-variable "expose_container_port" {
-  type        = number
-  description = "the port to expose the conatiner"
-  default     = 80
-}

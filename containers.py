@@ -1,9 +1,13 @@
 import docker
-  
+from ssh_connect import RemoteClient
+ 
 
 class Containers:
     def __init__(self):
         self.client = docker.from_env()
+        self.ssh = RemoteClient("34.71.56.150", "shai4458", "vm_tfs\\.ssh\\google_compute_engine")
+        self.ssh.connection()
+
 
     def get_all_containers_name(self):
         running_container = self.client.containers.list(all=True)
@@ -17,3 +21,11 @@ class Containers:
        
         self.client.containers.run(image_name, detach=True, ports={port: target_port}, name=container_name)
         # return "can't run image, may be image not exist."
+
+    def pull_and_run_images(self,image_name_tag, container_valid_names):
+        # pull and run images
+        for image_name, container_name in list(zip(image_name_tag,container_valid_names)):
+            print(image_name)
+            self.ssh.exec_command("sudo docker pull {}".format(image_name))
+            print(container_name)
+            self.ssh.exec_command("sudo docker run -d --name {} {}".format(container_name, image_name))
