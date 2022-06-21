@@ -58,45 +58,30 @@ def destroy():
 # get the fields and
 # print them on the screen
 def submit():  
-    # dic = request.form
+    os.chdir('c:\\Users\\User\\Documents\\FourthYear\\Starship\\Starship-Final-Project')
     provider = request.form.get('provider')
     service = request.form.get('service')
-    images = request.form.get('images')
-    names = request.form.get('names')
-    ports = request.form.get('ports')
+    images = request.form.get('images').split(",")
+    names = request.form.get('names').split(",")
+    ports = request.form.get('ports').split(",")
     hermes = request.form.get('hermes')
     print(provider,service,images ,names ,ports ,hermes)
 
-    # print("The image Name is : " + img)
-    # print("The instance name is : " + vm_names)
-    # print("The number of VMs : " + str(vm))
-    # print("The k8s cluster : " + str(k8s))
-
-    # img = img[1:-1].split(", ")
-
-    # container_valid_names = genrate_valid_name(img)
-    vm = 1
-    k8s=0
     vm_names = "demo"
 
     #change provider directiory
     os.chdir(os.getcwd() + f"\\{provider}\\{service}\\")
 
-
-
-    if (vm > 0) and (k8s==0):
+    if service == "vm":
+        vm = 1
         tf.create_vm_instances(vm_name=vm_names, vm_number=vm)
+        containers.ssh_to_vm()
         containers.pull_and_run_images(image_name_tag=images, container_valid_names=names)
 
-    if (vm == 0) and (k8s>0):
-        tf.create_k8s_cluster(k8s)
-        helm.run_helm(name=names, image_name=images) #, image_tag=version)
-
-    
-    # image_var.set("")
-    # vm_name_var.set("")
-    # vm_var.set(0)
-    # k8s_var.set(0)
+    if service == 'k8s':
+        k8s=2
+        tf.create_k8s_cluster(nodes_number=k8s)
+        helm.run_helm(name=names, image_name=images)
     return "done"
         
 
