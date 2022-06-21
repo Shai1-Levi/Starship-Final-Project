@@ -5,7 +5,7 @@ from ssh_connect import RemoteClient
 class Containers:
     def __init__(self):
         self.client = docker.from_env()
-        self.ssh = RemoteClient("34.71.56.150", "shai4458", "vm_tfs\\.ssh\\google_compute_engine")
+        self.ssh = RemoteClient("35.192.14.163", "shai4458", "vm\\.ssh\\google_compute_engine")
         self.ssh.connection()
 
 

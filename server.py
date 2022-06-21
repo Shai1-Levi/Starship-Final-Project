@@ -1,9 +1,7 @@
 import requests
 import os
-from flask import Flask, request , jsonify
+from flask import Flask, request , jsonify, render_template
 import json
-import pymongo
-import hvac
 from flask_cors import CORS, cross_origin
 import tkinter as tk
 from containers import Containers
@@ -27,11 +25,9 @@ def genrate_valid_name(self,image_name):
     new_image_name = re.compile(regex).split(image_name)
     return new_image_name[-1]
 
-
 @app.route('/', methods=['GET'])
-@cross_origin()
-def hello():
-    return str({"hello":"world"}),200
+def main():
+    return render_template("index.html")
 
 
 def image_container():
@@ -40,45 +36,70 @@ def image_container():
     containers.pull_image(img)
     containers.run_container(img, valid_name, 80, 8080)
 
+def genrate_valid_name(images_name):
+        new_images_name = []
+        for image_name in images_name:
+            if "/" in image_name:
+                regex = "/"            
+                image_name = re.compile(regex).split(image_name)[1]
+            regex = ":"  
+            vaild_name = re.compile(regex).split(image_name)[0]           
+            
+            new_images_name.append(vaild_name)
+        return new_images_name
 
-@app.route("/vmInstance/", methods=['POST'])
-@cross_origin()
-def create_vm_instances():
-    response = request.get_json()
-    print(response)
-    img = response['image_tag']
-    version = response['version'] 
-    vm_number = response['vm_instance_number']
-    vm_name = response['vm_name']
-
-    return 200
-
-    # if (vm_number > 0):
-    #     valid_name = genrate_valid_name(img)
-    #     tf.create_vm_instances(vm_number)
-    #     tf.create_vm_instances(vm_name=vm_name, image_name_tag="{}:{}".format(img, version), container_name=valid_name, vm_number=vm_number)
+def destroy():
+    tf.terraform_destroy()
 
 
-@app.route("/k8sCluster/", methods=['POST'])
-@cross_origin()
-def create_k8s_cluster(node_count):
-    if request.method == 'POST':
-        node_count = request.form.get('node_count')
-        img = request.form.get('image_tag')
-        version = request.form.get('version')
-    else:
-        return jsonify(isError= True,
-                    message= "bad access",
-                    statusCode= 404,
-                    data= ""), 404
+@app.route("/app", methods=['POST'])
+# @cross_origin()
+# defining a function that will
+# get the fields and
+# print them on the screen
+def submit():  
+    # dic = request.form
+    provider = request.form.get('provider')
+    service = request.form.get('service')
+    images = request.form.get('images')
+    names = request.form.get('names')
+    ports = request.form.get('ports')
+    hermes = request.form.get('hermes')
+    print(provider,service,images ,names ,ports ,hermes)
+
+    # print("The image Name is : " + img)
+    # print("The instance name is : " + vm_names)
+    # print("The number of VMs : " + str(vm))
+    # print("The k8s cluster : " + str(k8s))
+
+    # img = img[1:-1].split(", ")
+
+    # container_valid_names = genrate_valid_name(img)
+    vm = 1
+    k8s=0
+    vm_names = "demo"
+
+    #change provider directiory
+    os.chdir(os.getcwd() + f"\\{provider}\\{service}\\")
+
+
+
+    if (vm > 0) and (k8s==0):
+        tf.create_vm_instances(vm_name=vm_names, vm_number=vm)
+        containers.pull_and_run_images(image_name_tag=images, container_valid_names=names)
+
+    if (vm == 0) and (k8s>0):
+        tf.create_k8s_cluster(k8s)
+        helm.run_helm(name=names, image_name=images) #, image_tag=version)
+
     
-    if (node_count>0):
-        valid_name = genrate_valid_name(img)
-        tf.create_k8s_cluster(node_count)
-        helm.run_helm(name=valid_name, image_name=img, image_tag=version)
-
+    # image_var.set("")
+    # vm_name_var.set("")
+    # vm_var.set(0)
+    # k8s_var.set(0)
+    return "done"
         
 
 # # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4500, debug=False)
+    app.run(host='127.0.0.1', port=5000, debug=False)

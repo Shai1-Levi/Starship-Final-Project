@@ -12,8 +12,8 @@ class terraform:
 
     def create_vm_instances(self, vm_name, vm_number=0):
         if vm_number>0:
-            os.chdir(os.getcwd()+"\\vm_tfs\\")
-            print(os.getcwd())
+            # os.chdir(os.getcwd()+"\\vm\\")
+            print("path", os.getcwd())
             self.terraform_init()
             self.terraform_plan()
             self.terraform_apply_vm_instance(vm_name)
@@ -23,7 +23,7 @@ class terraform:
     def create_k8s_cluster(self,nodes_number=0):
         if nodes_number>0:
             print("cluster")
-            os.chdir(os.getcwd()+"\cluster_tfs\\")
+            # os.chdir(os.getcwd()+"\cluster_tfs\\")
             print(os.getcwd())
             self.terraform_init()
             self.terraform_plan() 

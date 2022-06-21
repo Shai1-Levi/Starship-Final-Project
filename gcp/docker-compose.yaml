@@ -1,0 +1,29 @@
+services:
+  hermes:
+    container_name: rezilion-hermes
+    cpus: 0.95
+    environment:
+      COMMON_API_KEY: 'Qloeq2OjzC7mD0EmpNblH8vzcUOMT7433aJ2rLuw'
+      HERMES_ACCEPTED_EULA: 'yes'
+      HERMES_CONTAINERS_ONLY: 'no'
+      HERMES_CONTAINERS_SCOPE: all
+      HERMES_DESTINATION: https://9vq1hwggsa.execute-api.us-east-1.amazonaws.com/elysiumstaging
+      HERMES_EXECUTION_WITHOUT_CGROUPS: periodic-run
+      HERMES_HOST_SCOPE: all
+      HERMES_IDENTIFIER: hostname
+      HERMES_LIFE_TIME: 8h
+      HERMES_SAMPLE_INTERVAL: 0s
+      HERMES_TEMP_DISK_STORAGE: /home
+      HERMES_UPLOAD_INTERVAL: 2m
+      HOST_ROOT: /host_root
+    image: rezilion/instrument:97f9056d
+    mem_limit: 1gb
+    network_mode: host
+    pid: host
+    privileged: true
+    restart: 'no'
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - /:/host_root:ro
+version: '2.2'
+
