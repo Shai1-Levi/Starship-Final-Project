@@ -81,7 +81,7 @@ def submit():
     if service == 'k8s':
         k8s=2
         tf.create_k8s_cluster(nodes_number=k8s)
-        helm.run_helm(name=names, image_name=images)
+        helm.run_helm(names=names, images=images, ports=ports)
     return "done"
         
 
