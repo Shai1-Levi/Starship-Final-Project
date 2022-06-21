@@ -1,0 +1,205 @@
+<html lang="en">
+
+<head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bootstrap demo</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+<!--        <script src="../static/jquery-3.4.1.slim.min.js"></script>-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script>// src="../static/jquery-3.4.1.slim.min.js">
+
+
+        function runAssessment(){
+            let provider = document.getElementById('azure').checked ? 'azure' :
+                          document.getElementById('aws').checked ? 'aws' :
+                                                                   'gcp'
+            let service = document.getElementById('k8s').checked ? 'k8s' : 'vm'
+            let images = document.getElementsByName('images')[0].value
+            let names = document.getElementsByName('containernames')[0].value
+            let ports = document.getElementsByName('ports')[0].value
+            let hermes = document.getElementById('run').checked ? 'run' : 'dontrun'
+
+            let dic = {'provider': provider, 'service': service, 'images': images, 'names': names, 'ports': ports,
+            'hermes': hermes}
+            console.log(dic)
+            $.ajax({
+               type: 'post',
+               url: 'http://localhost:5000/test',
+               data: dic,
+               context: document.body}).done(function(response){
+                   console.log(response);
+            });
+        }
+
+        function switchDivs(div){
+            $('#nav-home-tab').tab('dispose')
+            $('#nav-content-tab').tab('dispose')
+            $('#nav-profile-tab').tab('dispose')
+            $(div).tab('show')
+        }
+        </script>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+
+
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                type="button" role="tab" aria-controls="nav-home" aria-selected="true">Assessment</button>
+            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
+                type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Details</button>
+            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
+                type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Agent</button>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-home" aria-labelledby="nav-home-tab">
+                <div class="row" id="row1">
+                    <div class="col-md-10 offset-md-1">
+                        <div class="signup-form">
+                            <form  id="form1" class="mt-5 border p-4 bg-light shadow">
+                                <h4 class="mb-5 text-secondary">Create Your Attack Assesment</h4>
+                                <div>
+                                    <h5 class="mb-5 text-secondary">Choose Your Provider</h5>
+
+                                    <input type="radio" class="btn-check" name="provider" id="azure"
+                                        autocomplete="off">
+                                    <label class="btn btn-outline-success" for="azure"><img
+                                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Microsoft_Azure_Logo.svg/1200px-Microsoft_Azure_Logo.svg.png"
+                                            width="130" height="30" /></label>
+                                    <input type="radio" class="btn-check" name="provider" id="aws"
+                                        autocomplete="off">
+                                    <label class="btn btn-outline-success" for="aws"><img
+                                            src="https://download.logo.wine/logo/Amazon_Web_Services/Amazon_Web_Services-Logo.wine.png"
+                                            width="60" height="30" /></label>
+
+
+                                    <input type="radio" class="btn-check" name="provider" id="gcp"
+                                        autocomplete="off">
+                                    <label class="btn btn-outline-success" for="gcp"><img
+                                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Google_Cloud_logo.svg/2560px-Google_Cloud_logo.svg.png"
+                                            width="130" height="30" /></label>
+
+
+                                </div>
+                                <br />
+                                <br />
+                                <div>
+                                    <h5 class="mb-5 text-secondary">Create Your Services</h5>
+
+                                    <input type="radio" class="btn-check" id="k8s" name="service"
+                                        autocomplete="off">
+                                    <label class="btn btn-outline-success" for="k8s">Manage Kubernetes</label>
+
+                                    <input type="radio" class="btn-check" id="vm" name="service"
+                                        autocomplete="off">
+                                    <label class="btn btn-outline-success" for="vm">VM Instance</label>
+                                </div>
+                                <div class="col-md-12">
+                                    <input type="button" class="btn btn-primary float-end" id="nextBtn" onclick="switchDivs('#nav-profile-tab')" value="next"/>
+                                </div>
+                                <br />
+                                <br />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade"  id="nav-profile" aria-labelledby="nav-profile-tab">
+                <div class="row" id="row2">
+                    <div class="col-md-10 offset-md-1">
+                        <div class="signup-form">
+                            <form action="" id="form2" class="mt-5 border p-4 bg-light shadow">
+                                <div class="row">
+                                    <div class="mb-2 col-md-4">
+                                        <label>Docker Images</label>
+                                        <input type="text" name="images" class="form-control" placeholder="nginx,mongodb">
+                                    </div>
+
+                                    <div class="mb-2 col-md-4">
+                                        <label>Container Names</label>
+                                        <input type="text" name="containernames" class="form-control" placeholder="mynginx,mymongo">
+                                    </div>
+
+                                    <div class="mb-2 col-md-4">
+                                        <label>Ports</label>
+                                        <input type="text" name="ports" class="form-control" placeholder="5000,5001">
+                                    </div>
+
+<!--                                    <div class="mb-3 col-md-4">-->
+<!--                                        <label>Expose<span class="text-danger"></span></label>-->
+<!--                                        <input type="password" name="password" class="form-control"-->
+<!--                                            placeholder="Enter Password">-->
+<!--                                    </div>-->
+<!--                                    <div class="mb-3 col-md-4">-->
+<!--                                        <label>Ports<span class="text-danger"></span></label>-->
+<!--                                        <input type="password" name="confirmpassword" class="form-control"-->
+<!--                                            placeholder="Confirm Password">-->
+<!--                                    </div>-->
+                                    <div class="col-md-12">
+                                        <input type="button" class="btn btn-primary float-end" id="moveToContact" onclick="switchDivs('#nav-contact-tab')" value="next"/>
+                                        <input type="button" class="btn btn-primary float-start" id="moveToHome" onclick="switchDivs('#nav-home-tab')" value="back"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="nav-contact" aria-labelledby="nav-contact-tab">
+                <div class="row">
+<!--                    <div class="col-md-10 offset-md-1">-->
+                        <div class="signup-form">
+                            <form action="" id="form3" class="mt-5 border p-4 bg-light shadow">
+                                <div class="row">
+                                    <center>
+                                        <div class="card" style="width: 18rem;">
+                                            <img src="https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco,dpr_1/715a1f81b5a52134781f"
+                                                class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Rezilion Agent </h5>
+                                                <p class="card-text">Run the Hermes agent automatically to explore the exploitable vulnerabilities.</p>
+                                                <div class="btn-group" role="group"
+                                                    aria-label="Basic checkbox toggle button group">
+                                                    <input type="radio" class="btn-check" name="agent" id="run"
+                                                        autocomplete="off">
+                                                    <label class="btn btn-outline-primary" for="run">Run Agent</label>
+
+                                                    <input type="radio" class="btn-check" name="agent" id="dontrun"
+                                                        autocomplete="off">
+                                                    <label class="btn btn-outline-danger" for="dontrun">Dont Run
+                                                        Agent</label>
+                                                </div>
+<!--                                                <div class="tab-pane fade show active">-->
+<!--                                                    <button class="btn btn-primary float-start btnPrevious" id="btn4" onclick="switchDivs('row1')">Back</button>-->
+<!--                                                </div>-->
+                                                <br><br>
+                                                <div class="col-md-12">
+                                                    <input type="button" class="btn btn-primary float-end" onclick="runAssessment()" value="Submit"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </center>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+<!--                </div>-->
+            </div>
+    </div>
+</body>
+
+</html>
+
+
