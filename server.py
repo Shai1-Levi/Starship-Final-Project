@@ -82,9 +82,10 @@ def submit():
         k8s=2
         tf.create_k8s_cluster(nodes_number=k8s)
         helm.run_helm(names=names, images=images, ports=ports)
+        # containers.run_hermes()
     return "done"
         
 
-# # Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=False)
+# # # Press the green button in the gutter to run the script.
+# if __name__ == '__main__':
+#     app.run(host='127.0.0.1', port=5000, debug=False)
